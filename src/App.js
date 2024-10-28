@@ -41,43 +41,40 @@ class App extends Component {
   renderChart() {
     const data = this.state.wordFrequency.sort((a, b) => b[1] - a[1]).slice(0, 5);
     const svg = d3.select(".svg_parent")
-      .attr("width", 1000) // Increased width to further separate words
+      .attr("width", 1000) 
       .attr("height", 400);
 
     const fontSizeScale = d3.scaleLinear()
       .domain([0, d3.max(data, d => d[1])])
-      .range([20, 50]); // Increased maximum font size for more clarity
+      .range([20, 50]);
 
     const xScale = d3.scaleLinear()
       .domain([0, data.length - 1])
-      .range([20, 800]); // Extended range to distribute words further apart
+      .range([20, 800]);
 
     const yPosition = 200;
 
     const words = svg.selectAll("text")
       .data(data, d => d[0]);
 
-    // Exit selection
     words.exit()
       .transition()
       .duration(500)
       .attr("opacity", 0)
       .remove();
 
-    // Enter selection with "spawning" grow effect
     words.enter()
       .append("text")
       .attr("x", (d, i) => xScale(i))
       .attr("y", yPosition)
-      .attr("font-size", 0) // Start small for grow effect
+      .attr("font-size", 0)
       .attr("opacity", 0)
       .text(d => d[0])
       .transition()
       .duration(1000)
-      .attr("font-size", d => fontSizeScale(d[1]) + "px") // Grow to calculated font size
+      .attr("font-size", d => fontSizeScale(d[1]) + "px")
       .attr("opacity", 1);
 
-    // Update selection
     words.transition()
       .duration(1000)
       .attr("x", (d, i) => xScale(i))
